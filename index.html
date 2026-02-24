@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>معركة الأنيمي: التحفة الفنية - النسخة الموسعة</title>
+    <style>
+        /* SECTION 1: ADVANCED CSS STYLING */
+        :root { 
+            --p1-color: #00d2ff; 
+            --p2-color: #ff416c;
+            --ult-color: #feca57; 
+            --bg-dark: #02020a;
+            --accent: #ffd700;
+            --parry-color: #fffb00;
+        }
+
+        body { 
+            margin: 0; 
+            background: #000; 
+            overflow: hidden; 
+            font-family: 'Tahoma', 'Segoe UI', Geneva, Verdana, sans-serif; 
+            user-select: none; 
+            touch-action: none; 
+        }
+
+        /* الطبقات الشفافة للقوائم */
+        .overlay { 
+            position: fixed; 
+            top: 0; left: 0; 
+            width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.95); 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            z-index: 1000; 
+            color: white; 
+            text-align: center; 
+            transition: 0.8s ease-in-out;
+        }
+
+        .menu-box { 
+            background: rgba(255,255,255,0.03); 
+            padding: 50px; 
+            border-radius: 40px; 
+            border: 1px solid rgba(255,255,255,0.1); 
+            backdrop-filter: blur(20px); 
+            min-width: 400px; 
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+        }
+
+        .overlay h1 { 
+            font-size: 60px; /* تصغير طفيف للخط العربي */
+            margin: 0; 
+            letter-spacing: 2px; 
+            background: linear-gradient(to bottom, #fff, var(--p1-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 15px var(--p1-color));
+            font-weight: 800;
+        }
+
+        .stats-top { 
+            margin: 20px 0; 
+            font-size: 20px; 
+            color: var(--accent); 
+            display: flex; 
+            gap: 30px; 
+            justify-content: center;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .menu-btn { 
+            width: 100%; 
+            padding: 20px; 
+            margin: 12px 0; 
+            font-size: 22px; 
+            background: rgba(255,255,255,0.05); 
+            color: white; 
+            border: 2px solid rgba(255,255,255,0.2); 
+            border-radius: 60px; 
+            cursor: pointer; 
+            transition: 0.4s;
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 15px;
+            letter-spacing: 0px;
+            font-family: 'Tahoma', sans-serif;
+            font-weight: bold;
+        }
+
+        .menu-btn:hover {
+            background: white;
+            color: black;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(255,255,255,0.2);
+        }
+
+        .menu-btn:active { transform: scale(0.92); }
+
+        /* قوائم الاختيار الفرعية */
+        .sub-menu { 
+            display: none; 
+            position: fixed; 
+            top: 0; left: 0; 
+            width: 100%; height: 100%; 
+            background: radial-gradient(circle at center, #111, #000); 
+            z-index: 2000; 
+            color: white; 
+            padding: 40px; 
+            box-sizing: border-box; 
+            overflow-y: auto; 
+        }
+
+        .ability-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
+            gap: 25px; 
+            padding: 20px; 
+        }
+
+        .ability-card { 
+            background: rgba(255,255,255,0.04); 
+            border: 3px solid rgba(255,255,255,0.1); 
+            border-radius: 20px; 
+            padding: 25px; 
+            cursor: pointer; 
+            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            gap: 15px;
+        }
+
+        .ability-card span { font-weight: bold; font-size: 18px; }
+        .ability-card small { direction: ltr; } /* للأرقام */
+
+        .ability-card:hover { border-color: var(--p1-color); background: rgba(0,210,255,0.05); }
+
+        .ability-card.active { 
+            border-color: var(--accent); 
+            background: rgba(255,215,0,0.15); 
+            transform: scale(1.1); 
+            box-shadow: 0 0 30px rgba(255,215,0,0.2);
+        }
+
+        .ability-icon { font-size: 50px; }
+        .char-preview { 
+            width: 100px; 
+            height: 100px; 
+            border-radius: 8px; 
+            margin-bottom: 10px; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .close-btn { 
+            position: absolute; 
+            top: 30px; left: 40px; 
+            font-size: 40px; 
+            background: none; 
+            border: none; 
+            color: white; 
+            cursor: pointer; 
+            transition: 0.3s;
+        }
+
+        /* واجهة المستخدم أثناء اللعب */
+        .ui-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 100; direction: ltr; }
+        .hud { display: flex; justify-content: space-between; padding: 30px 60px; }
+        .stat-box { width: 350px; filter: drop-shadow(0 0 10px rgba(0,0,0,0.5)); }
+        
+        .bar-bg { 
+            width: 100%; height: 20px; 
+            background: rgba(255,255,255,0.05); 
+            border: 1px solid rgba(255,255,255,0.2); 
+            border-radius: 10px; 
+            overflow: hidden; 
+            position: relative;
+        }
+
+        .bar-fill { 
+            height: 100%; width: 100%; 
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            position: relative;
+        }
+        
+        .bar-glow {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: barSlide 2s infinite;
+        }
+
+        @keyframes barSlide { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+
+        #h1 { background: linear-gradient(90deg, #00c6ff, #0072ff); box-shadow: 0 0 15px var(--p1-color); }
+        #h2 { background: linear-gradient(90deg, #ff416c, #ff4b2b); box-shadow: 0 0 15px var(--p2-color); }
+
+        /* أزرار التحكم */
+        .controls { 
+            position: fixed; 
+            bottom: 30px; 
+            right: 30px; 
+            display: grid; 
+            grid-template-columns: repeat(2, 70px); 
+            gap: 15px; 
+            pointer-events: auto; 
+            display: none; 
+        }
+
+        .btn { 
+            width: 70px; height: 70px; 
+            border-radius: 50%; 
+            background: rgba(255,255,255,0.03); 
+            border: 2px solid rgba(255,255,255,0.2); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 28px; 
+            color: white; 
+            position: relative; 
+            overflow: hidden; 
+            backdrop-filter: blur(10px);
+            transition: 0.2s;
+        }
+
+        .btn:active { transform: scale(0.85); background: rgba(255,255,255,0.15); }
+        
+        .cd-mask { position: absolute; bottom: 0; width: 100%; height: 0%; background: rgba(0,0,0,0.75); pointer-events: none; }
+        .cd-text { position: absolute; font-size: 20px; font-weight: bold; color: white; z-index: 10; pointer-events: none; }
+        
+        /* الجويستيك */
+        #joy-base { 
+            position: fixed; 
+            bottom: 60px; 
+            left: 60px; 
+            width: 140px; height: 140px; 
+            background: rgba(255,255,255,0.05); 
+            border: 2px solid rgba(255,255,255,0.15); 
+            border-radius: 50%; 
+            display: none; 
+            touch-action: none; 
+            z-index: 500; 
+        }
+
+        #joy-stick { 
+            position: absolute; 
+            top: 40px; left: 40px; 
+            width: 60px; height: 60px; 
+            background: linear-gradient(145deg, #fff, #bbb); 
+            border-radius: 50%; 
+            box-shadow: 0 0 20px rgba(255,255,255,0.3); 
+            pointer-events: none; 
+        }
+
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+
+<div id="mainMenu" class="overlay">
+    <div class="menu-box">
+        <h1>حرب الأنيمي</h1>
+        <div class="stats-top">
+            <span>فوز: <b id="winCount">0</b></span>
+            <span>خسارة: <b id="lossCount">0</b></span>
+        </div>
+        <p style="color: var(--p1-color); font-weight: bold; margin-bottom: 20px;">محرك فائق السرعة - عرض سينمائي</p>
+        <button class="menu-btn" onclick="startGame()"><span>⚔️</span> ابدأ المعركة</button>
+        <button class="menu-btn" onclick="openMenu('shopMenu')"><span>🎭</span> اختر المقاتل</button>
+        <button class="menu-btn" onclick="openMenu('abilityMenu')"><span>🌀</span> تجهيز القدرات</button>
+    </div>
+</div>
+
+<div id="shopMenu" class="sub-menu">
+    <button class="close-btn" onclick="closeMenus()">×</button>
+    <h2 style="font-size: 40px; color:var(--accent); text-align: center;">اختر مصيرك</h2>
+    <div class="ability-grid">
+        <div class="ability-card active" id="char-0" onclick="selectChar(0, '#00d2ff', '#222')">
+            <div class="char-preview" style="background: #222; border: 3px solid #00d2ff;"></div>
+            <span>قاهر العواصف</span>
+            <small>السرعة: 10 | القوة: 7</small>
+        </div>
+        <div class="ability-card" id="char-1" onclick="selectChar(1, '#ff416c', '#111')">
+            <div class="char-preview" style="background: #111; border: 3px solid #ff416c;"></div>
+            <span>حاصد الأرواح</span>
+            <small>السرعة: 8 | القوة: 10</small>
+        </div>
+        <div class="ability-card" id="char-2" onclick="selectChar(2, '#228b22', '#1a4d1a')">
+            <canvas id="kingPreview" class="char-preview" width="128" height="128" style="background: transparent; border: 3px solid #228b22;"></canvas>
+            <span>الملك الأخضر</span>
+            <small>السرعة: 6 | القوة: 12</small>
+        </div>
+    </div>
+</div>
+
+<div id="abilityMenu" class="sub-menu">
+    <button class="close-btn" onclick="closeMenus()">×</button>
+    <h2 style="font-size: 40px; color:var(--accent); text-align: center;">اختر المهارة الخاصة</h2>
+    <div class="ability-grid">
+        <div class="ability-card active" id="card-bomb" onclick="selectAbility('bomb', '💣')">
+            <div class="ability-icon">💣</div><span>الكرة البركانية</span>
+        </div>
+        <div class="ability-card" id="card-shield" onclick="selectAbility('shield', '🛡️')">
+            <div class="ability-icon">🛡️</div><span>الدرع الإلهي</span>
+        </div>
+        <div class="ability-card" id="card-speed" onclick="selectAbility('speed', '⚡')">
+            <div class="ability-icon">⚡</div><span>سرعة البرق</span>
+        </div>
+        <div class="ability-card" id="card-life" onclick="selectAbility('life', '🧛')">
+            <div class="ability-icon">🧛</div><span>سرقة الحياة</span>
+        </div>
+        <div class="ability-card" id="card-gravity" onclick="selectAbility('gravity', '🌌')">
+            <div class="ability-icon">🌌</div><span>فجوة العدم</span>
+        </div>
+    </div>
+</div>
+
+<div id="endScreen" class="overlay" style="display: none;">
+    <h1 id="endStatus" style="font-size: 100px;">النهاية!</h1>
+    <h2 id="endSubText" style="margin-bottom: 30px; letter-spacing: 2px;"></h2>
+    <button class="menu-btn" style="width: 300px" onclick="location.reload()">العودة للقائمة</button>
+</div>
+
+<div class="ui-layer">
+    <div class="hud">
+        <div class="stat-box">
+            <div style="color: var(--p1-color); margin-bottom: 5px; font-weight: bold; font-size: 14px;">أنت (اللاعب 1)</div>
+            <div class="bar-bg"><div id="h1" class="bar-fill"><div class="bar-glow"></div></div></div>
+        </div>
+        <div class="stat-box">
+            <div style="color: var(--p2-color); margin-bottom: 5px; text-align: right; font-weight: bold; font-size: 14px;">الزعيم (الذكاء الاصطناعي)</div>
+            <div class="bar-bg"><div id="h2" class="bar-fill"><div class="bar-glow"></div></div></div>
+        </div>
+    </div>
+</div>
+
+<canvas id="gameCanvas"></canvas>
+<div id="joy-base"><div id="joy-stick"></div></div>
+
+<div class="controls" id="gameControls">
+    <div class="btn" id="btnAtk" style="border-color: #ff4757">👊</div>
+    <div class="btn" id="btnDsh" style="border-color: #1e90ff">
+        ⚡<div id="dsh-cd" class="cd-mask"></div><span id="dsh-txt" class="cd-text"></span>
+    </div>
+    <div class="btn" id="btnUlt" style="border-color: var(--ult-color)">
+        💥<div id="ult-cd" class="cd-mask"></div><span id="ult-txt" class="cd-text"></span>
+    </div>
+    <div class="btn" id="btnOrb" style="border-color: #ffffff">
+        <span id="specialIcon">❓</span><div id="orb-cd" class="cd-mask"></div><span id="orb-txt" class="cd-text"></span>
+    </div>
+</div>
+
+<script>
+/**
+ * SECTION 2: GAME ENGINE CORE CONFIGURATION
+ * ----------------------------------------
+ */
+
+// رسم الملك في معاينة الشخصية
+function drawKingPreview() {
+    const canvas = document.getElementById('kingPreview');
+    if(!canvas) return;
+    const ctx = canvas.getContext('2d');
+    
+    const gold = [255, 215, 0];
+    const gold_dark = [218, 165, 32];
+    const gold_light = [255, 247, 205];
+    const skin = [255, 206, 158];
+    const skin_dark = [224, 172, 105];
+    const green_robe = [34, 139, 34];
+    const green_dark = [0, 100, 0];
+    const green_light = [144, 238, 144];
+    const red = [220, 20, 60];
+    const white = [255, 255, 255];
+    const black = [30, 30, 30];
+    const brown = [139, 90, 43];
+    const blue = [30, 144, 255];
+    
+    function rgba(arr, a=1) { return `rgba(${arr[0]},${arr[1]},${arr[2]},${a})`; }
+    function rect(x, y, w, h, c) { ctx.fillStyle = rgba(c); ctx.fillRect(x, y, w, h); }
+    
+    ctx.clearRect(0, 0, 128, 128);
+    
+    // التاج
+    rect(38, 16, 52, 12, gold);
+    rect(40, 18, 48, 8, gold_light);
+    rect(44, 8, 8, 8, gold);
+    rect(58, 4, 12, 12, gold);
+    rect(76, 8, 8, 8, gold);
+    ctx.fillStyle = rgba(red); ctx.fillRect(46, 20, 4, 4);
+    ctx.fillRect(62, 20, 4, 4);
+    ctx.fillRect(78, 20, 4, 4);
+    
+    // الشعر
+    ctx.fillStyle = rgba(brown);
+    ctx.beginPath(); ctx.arc(38, 37, 6, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(90, 37, 6, 0, Math.PI*2); ctx.fill();
+    
+    // الوجه
+    ctx.fillStyle = rgba(skin);
+    ctx.beginPath(); ctx.ellipse(64, 47, 22, 20, 0, 0, Math.PI*2); ctx.fill();
+    
+    // الأذن
+    ctx.beginPath(); ctx.arc(40, 44, 4, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(88, 44, 4, 0, Math.PI*2); ctx.fill();
+    
+    // العيون
+    ctx.fillStyle = rgba(white);
+    ctx.fillRect(50, 38, 10, 10);
+    ctx.fillRect(68, 38, 10, 10);
+    ctx.fillStyle = rgba(black);
+    ctx.fillRect(53, 41, 4, 4);
+    ctx.fillRect(71, 41, 4, 4);
+    
+    // الحواجب
+    ctx.strokeStyle = rgba(brown); ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(55, 36, 5, Math.PI, 0); ctx.stroke();
+    ctx.beginPath(); ctx.arc(75, 36, 5, Math.PI, 0); ctx.stroke();
+    
+    // الأنف
+    rect(62, 48, 4, 8, skin_dark);
+    
+    // الابتسامة
+    ctx.strokeStyle = rgba(red); ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(64, 57, 10, 0, Math.PI); ctx.stroke();
+    
+    // اللحية
+    ctx.fillStyle = rgba(brown);
+    ctx.beginPath();
+    ctx.moveTo(48, 62);
+    ctx.lineTo(64, 70);
+    ctx.lineTo(80, 62);
+    ctx.lineTo(76, 66);
+    ctx.lineTo(64, 68);
+    ctx.lineTo(52, 66);
+    ctx.closePath();
+    ctx.fill();
+    
+    // الرقبة
+    rect(56, 66, 16, 10, skin);
+    
+    // الطوق
+    ctx.fillStyle = rgba(gold);
+    ctx.beginPath(); ctx.ellipse(64, 78, 14, 4, 0, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = rgba(red);
+    ctx.fillRect(62, 76, 4, 4);
+    
+    // العباءة
+    ctx.fillStyle = rgba(green_robe);
+    ctx.beginPath();
+    ctx.moveTo(64, 82);
+    ctx.lineTo(30, 94);
+    ctx.lineTo(26, 128);
+    ctx.lineTo(102, 128);
+    ctx.lineTo(98, 94);
+    ctx.closePath();
+    ctx.fill();
+    
+    // ظلال العباءة
+    ctx.fillStyle = rgba(green_light);
+    ctx.beginPath();
+    ctx.moveTo(64, 82);
+    ctx.lineTo(48, 88);
+    ctx.lineTo(44, 128);
+    ctx.lineTo(64, 118);
+    ctx.closePath();
+    ctx.fill();
+    
+    ctx.fillStyle = rgba(green_dark);
+    ctx.beginPath();
+    ctx.moveTo(64, 82);
+    ctx.lineTo(80, 88);
+    ctx.lineTo(84, 128);
+    ctx.lineTo(64, 118);
+    ctx.closePath();
+    ctx.fill();
+    
+    // حواف ذهبية
+    ctx.strokeStyle = rgba(gold); ctx.lineWidth = 4;
+    ctx.beginPath(); ctx.moveTo(30, 94); ctx.lineTo(26, 128); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(98, 94); ctx.lineTo(102, 128); ctx.stroke();
+    
+    // الأكمام
+    ctx.fillStyle = rgba(green_robe);
+    ctx.beginPath(); ctx.arc(32, 100, 10, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(96, 100, 10, 0, Math.PI*2); ctx.fill();
+    
+    // الأيدي
+    ctx.fillStyle = rgba(skin);
+    ctx.beginPath(); ctx.ellipse(26, 114, 8, 8, 0, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(102, 114, 8, 8, 0, 0, Math.PI*2); ctx.fill();
+    
+    // الصولجان
+    rect(24, 118, 4, 12, gold_dark);
+    ctx.fillStyle = rgba(gold);
+    ctx.beginPath(); ctx.ellipse(26, 125, 5, 3, 0, 0, Math.PI*2); ctx.fill();
+    
+    // الدرع
+    ctx.fillStyle = rgba(gold);
+    ctx.beginPath(); ctx.arc(102, 115, 6, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = rgba(red);
+    ctx.fillRect(100, 112, 4, 6);
+    
+    // الفرو
+    for(let x = 28; x < 100; x += 7) {
+        ctx.fillStyle = rgba(white);
+        ctx.beginPath(); ctx.ellipse(x+3, 126, 3, 2, 0, 0, Math.PI*2); ctx.fill();
+    }
+}
+
+// رسم الملك عند تحميل الصفحة
+window.addEventListener('load', drawKingPreview);
+
+const SCALE = 0.25; 
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+// نظام البيانات المحلي
+let wins = localStorage.getItem('animeWins') || 0;
+let losses = localStorage.getItem('animeLosses') || 0;
+let selectedAbility = 'bomb'; 
+let currentIcon = '❓';
+let p1Color = "#00d2ff";
+let p1Suit = "#222";
+let selectedCharacter = 0;
+
+// نظام التحكم في الوقت
+let gameFrozen = 0;
+let lastTime = 0;
+
+/**
+ * تحديث واجهة الإحصائيات في القائمة الرئيسية
+ */
+function updateStatsUI() {
+    document.getElementById('winCount').innerText = wins;
+    document.getElementById('lossCount').innerText = losses;
+}
+updateStatsUI();
+
+/**
+ * اختيار الشخصية
+ */
+function selectChar(id, color, suit) {
+    selectedCharacter = id;
+    p1Color = color;
+    p1Suit = suit;
+    document.querySelectorAll('#shopMenu .ability-card').forEach(c => c.classList.remove('active'));
+    document.getElementById('char-' + id).classList.add('active');
+}
+
+/**
+ * اختيار القدرة
+ */
+function selectAbility(type, icon) {
+    selectedAbility = type;
+    currentIcon = icon;
+    document.getElementById('specialIcon').innerText = icon;
+    document.querySelectorAll('#abilityMenu .ability-card').forEach(c => c.classList.remove('active'));
+    document.getElementById('card-' + type).classList.add('active');
+}
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let gameRunning = false;
+const world = { 
+    width: 12000, 
+    height: canvas.height / SCALE, 
+    groundY: (canvas.height / SCALE) - 150,
+    gravity: 1.8,
+    weather: "storm"
+};
+
+const platforms = [
+    { x: 1200, y: (canvas.height/SCALE)-400, w: 800, h: 40 },
+    { x: 3000, y: (canvas.height/SCALE)-650, w: 700, h: 40 },
+    { x: 5000, y: (canvas.height/SCALE)-500, w: 900, h: 40 },
+    { x: 7500, y: (canvas.height/SCALE)-450, w: 600, h: 40 },
+    { x: 9000, y: (canvas.height/SCALE)-700, w: 800, h: 40 }
+];
+
+let camera = { x: 0, y: 0, shake: 0 };
+let bullets = [], particles = [], orbs = [], gravityWells = [], rocks = [];
+let weatherParticles = [];
+
+function generateEnvironment() {
+    rocks = [];
+    for(let i=0; i<150; i++) {
+        rocks.push({
+            x: Math.random() * world.width,
+            y: world.groundY,
+            w: 100 + Math.random() * 300,
+            h: 40 + Math.random() * 150,
+            color: Math.random() > 0.5 ? "#111" : "#0a0a0a"
+        });
+    }
+
+    weatherParticles = [];
+    for(let i=0; i<300; i++) {
+        weatherParticles.push({
+            x: Math.random() * (world.width),
+            y: Math.random() * world.height,
+            len: 15 + Math.random() * 25,
+            v: 20 + Math.random() * 15
+        });
+    }
+}
+generateEnvironment();
+
+/**
+ * SECTION 3: ADVANCED CLASS DEFINITIONS
+ */
+
+class Particle {
+    constructor(x, y, color, size, vx, vy, lifeDec = 0.015) {
+        this.x = x; this.y = y; this.color = color;
+        this.vx = vx; this.vy = vy;
+        this.life = 1.0; this.size = size;
+        this.lifeDec = lifeDec;
+    }
+    update() {
+        this.x += this.vx; this.y += this.vy;
+        this.life -= this.lifeDec;
+    }
+    draw() {
+        if(this.life <= 0) return;
+        ctx.save();
+        ctx.globalAlpha = this.life;
+        ctx.shadowBlur = 15; ctx.shadowColor = this.color;
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+    }
+}
+
+class Projectile {
+    constructor(x, y, dir, owner) {
+        this.x = x; this.y = y; this.vx = dir * 65; this.owner = owner;
+        this.w = 200; this.h = 40; this.active = true;
+    }
+    update() {
+        this.x += this.vx;
+        if(Math.random() > 0.2) {
+            let pColor = this.owner.id === 1 ? (this.owner.isAwakened ? "#fff" : p1Color) : "#ff2e63";
+            particles.push(new Particle(this.x, this.y + 20, pColor, 10, -this.vx*0.2, (Math.random()-0.5)*15));
+        }
+        
+        let target = (this.owner === p1) ? p2 : p1;
+        if (this.active && this.checkCollision(target)) {
+            if(target.isParrying) {
+                this.vx *= -1.8;
+                this.owner = target;
+                camera.shake = 40;
+                createImpact(this.x, this.y, "yellow");
+            } else {
+                let dmg = this.owner.isAwakened ? 90 : 50;
+                target.takeDamage(dmg, this.vx > 0 ? 1 : -1, 50);
+                this.explode();
+                this.active = false;
+            }
+        }
+        if(this.x < 0 || this.x > world.width) this.active = false;
+    }
+    checkCollision(target) {
+        return this.x < target.x + target.w && this.x + this.w > target.x &&
+               this.y < target.y + target.h && this.y + this.h > target.y;
+    }
+    draw() {
+        if(!this.active) return;
+        ctx.save();
+        let color = this.owner.id === 1 ? (this.owner.isAwakened ? "#ffd700" : p1Color) : "#ff416c";
+        ctx.shadowBlur = 60; ctx.shadowColor = color;
+        ctx.fillStyle = "#fff";
+        ctx.fillRect(this.x, this.y, this.w, this.h);
+        ctx.strokeStyle = color; ctx.lineWidth = 10;
+        ctx.strokeRect(this.x, this.y, this.w, this.h);
+        ctx.restore();
+    }
+    explode() {
+        camera.shake = 45;
+        let color = this.owner.id === 1 ? (this.owner.isAwakened ? "#ffd700" : p1Color) : "#ff4b2b";
+        for(let i=0; i<60; i++) {
+            particles.push(new Particle(this.x, this.y, color, 15, (Math.random()-0.5)*50, (Math.random()-0.5)*50));
+        }
+    }
+}
+
+class TimedOrb {
+    constructor(x, y, vx, vy, owner) {
+        this.x = x; this.y = y; this.vx = vx; this.vy = vy;
+        this.owner = owner; this.timer = 180; this.radius = 50; this.exploded = false;
+    }
+    update() {
+        this.vy += world.gravity; this.x += this.vx; this.y += this.vy;
+        if (this.y + this.radius > world.groundY) { this.y = world.groundY - this.radius; this.vy *= -0.6; this.vx *= 0.8; }
+        
+        platforms.forEach(p => {
+            if(this.vy > 0 && this.y + this.radius >= p.y && this.y + this.radius <= p.y + p.h && this.x > p.x && this.x < p.x + p.w) {
+                this.y = p.y - this.radius; this.vy *= -0.6;
+            }
+        });
+
+        this.timer--; if (this.timer <= 0) this.explode();
+    }
+    draw() {
+        ctx.save(); ctx.translate(this.x, this.y);
+        ctx.shadowBlur = 40; ctx.shadowColor = "red";
+        ctx.fillStyle = "#000"; ctx.beginPath(); ctx.arc(0, 0, this.radius, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = this.timer % 10 < 5 ? "#ff0000" : "#330000"; ctx.beginPath(); ctx.arc(0, 0, 20, 0, Math.PI*2); ctx.fill();
+        ctx.restore();
+    }
+    explode() {
+        this.exploded = true; camera.shake = 100; gameFrozen = 8;
+        for(let i=0; i<120; i++) particles.push(new Particle(this.x, this.y, "#ff4500", 20, (Math.random()-0.5)*60, (Math.random()-0.5)*60));
+        [p1, p2].forEach(p => {
+            let dx = (p.x + p.w/2) - this.x;
+            if (Math.abs(dx) < 600) p.takeDamage(150, dx > 0 ? 1 : -1, 100);
+        });
+    }
+}
+
+/**
+ * SECTION 4: PLAYER CLASS
+ */
+
+class Player {
+    constructor(x, id, color, suit, isAI = false, charType = 0) {
+        this.id = id; this.x = x; this.w = 120; this.h = 180;
+        this.y = world.groundY - this.h; this.vx = 0; this.vy = 0; 
+        this.health = 500; this.maxHealth = 500;
+        this.facing = id === 1 ? 1 : -1; this.isAI = isAI;
+        this.color = color; this.suit = suit;
+        this.charType = charType;
+        
+        this.dshCD = 0; this.orbCD = 0; this.ultCD = 0;
+        
+        this.isShielded = false; this.shieldTimer = 0;
+        this.speedTimer = 0; this.lifeStealActive = false;
+        this.isAwakened = false;
+        this.onGround = false;
+        this.isParrying = false; 
+        this.parryTimer = 0;
+
+        this.comboCount = 0;
+        this.comboTimer = 0;
+        this.isRepelling = false; 
+    }
+
+    drawKing() {
+        const scale = 1.5;
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        
+        if(this.facing === -1) {
+            ctx.translate(this.w, 0);
+            ctx.scale(-1, 1);
+        }
+        
+        ctx.scale(scale, scale);
+        
+        const gold = this.isAwakened ? [255, 255, 255] : [255, 215, 0];
+        const gold_dark = [218, 165, 32];
+        const gold_light = this.isAwakened ? [255, 255, 200] : [255, 247, 205];
+        const skin = [255, 206, 158];
+        const skin_dark = [224, 172, 105];
+        const green_robe = this.isAwakened ? [50, 205, 50] : [34, 139, 34];
+        const green_dark = [0, 100, 0];
+        const green_light = [144, 238, 144];
+        const red = [220, 20, 60];
+        const white = [255, 255, 255];
+        const black = [30, 30, 30];
+        const brown = [139, 90, 43];
+        const blue = [30, 144, 255];
+        
+        function rgba(arr, a=1) { return `rgba(${arr[0]},${arr[1]},${arr[2]},${a})`; }
+        function rect(x, y, w, h, c) { ctx.fillStyle = rgba(c); ctx.fillRect(x, y, w, h); }
+        
+        // إضافة توهج للنسخة المستيقظة
+        if(this.isAwakened) {
+            ctx.shadowBlur = 40;
+            ctx.shadowColor = rgba(gold);
+        }
+        
+        // التاج
+        rect(15, 0, 50, 12, gold);
+        rect(17, 2, 46, 8, gold_light);
+        rect(20, -8, 8, 8, gold);
+        rect(33, -12, 12, 12, gold);
+        rect(50, -8, 8, 8, gold);
+        ctx.fillStyle = rgba(red); ctx.fillRect(22, 2, 4, 4);
+        ctx.fillRect(37, 2, 4, 4);
+        ctx.fillRect(52, 2, 4, 4);
+        
+        // الشعر
+        ctx.fillStyle = rgba(brown);
+        ctx.beginPath(); ctx.arc(15, 18, 6, 0, Math.PI*2); ctx.fill();
+        ctx.beginPath(); ctx.arc(65, 18, 6, 0, Math.PI*2); ctx.fill();
+        
+        // الوجه
+        ctx.fillStyle = rgba(skin);
+        ctx.beginPath(); ctx.ellipse(40, 25, 20, 18, 0, 0, Math.PI*2); ctx.fill();
+        
+        // الأذن
+        ctx.beginPath(); ctx.arc(18, 22, 4, 0, Math.PI*2); ctx.fill();
+        ctx.beginPath(); ctx.arc(62, 22, 4, 0, Math.PI*2); ctx.fill();
+        
+        // العيون
+        ctx.fillStyle = rgba(white);
+        ctx.fillRect(27, 18, 9, 9);
+        ctx.fillRect(44, 18, 9, 9);
+        ctx.fillStyle = this.isAwakened ? rgba(red) : rgba(black);
+        ctx.fillRect(30, 21, 3, 3);
+        ctx.fillRect(47, 21, 3, 3);
+        
+        // الحواجب
+        ctx.strokeStyle = rgba(brown); ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(31, 16, 4, Math.PI, 0); ctx.stroke();
+        ctx.beginPath(); ctx.arc(48, 16, 4, Math.PI, 0); ctx.stroke();
+        
+        // الأنف
+        rect(38, 28, 4, 7, skin_dark);
+        
+        // الابتسامة
+        ctx.strokeStyle = rgba(red); ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(40, 35, 8, 0, Math.PI); ctx.stroke();
+        
+        // اللحية
+        ctx.fillStyle = rgba(brown);
+        ctx.beginPath();
+        ctx.moveTo(26, 42);
+        ctx.lineTo(40, 48);
+        ctx.lineTo(54, 42);
+        ctx.lineTo(51, 45);
+        ctx.lineTo(40, 47);
+        ctx.lineTo(29, 45);
+        ctx.closePath();
+        ctx.fill();
+        
+        // الرقبة
+        rect(32, 45, 16, 10, skin);
+        
+        // الطوق
+        ctx.fillStyle = rgba(gold);
+        ctx.beginPath(); ctx.ellipse(40, 54, 12, 3, 0, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = rgba(red);
+        ctx.fillRect(38, 53, 4, 3);
+        
+        // العباءة
+        ctx.fillStyle = rgba(green_robe);
+        ctx.beginPath();
+        ctx.moveTo(40, 57);
+        ctx.lineTo(10, 67);
+        ctx.lineTo(7, 95);
+        ctx.lineTo(73, 95);
+        ctx.lineTo(70, 67);
+        ctx.closePath();
+        ctx.fill();
+        
+        // ظلال العباءة
+        ctx.fillStyle = rgba(green_light);
+        ctx.beginPath();
+        ctx.moveTo(40, 57);
+        ctx.lineTo(24, 62);
+        ctx.lineTo(22, 95);
+        ctx.lineTo(40, 88);
+        ctx.closePath();
+        ctx.fill();
+        
+        ctx.fillStyle = rgba(green_dark);
+        ctx.beginPath();
+        ctx.moveTo(40, 57);
+        ctx.lineTo(56, 62);
+        ctx.lineTo(58, 95);
+        ctx.lineTo(40, 88);
+        ctx.closePath();
+        ctx.fill();
+        
+        // حواف ذهبية
+        ctx.strokeStyle = rgba(gold); ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.moveTo(10, 67); ctx.lineTo(7, 95); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(70, 67); ctx.lineTo(73, 95); ctx.stroke();
+        
+        // الأكمام
+        ctx.fillStyle = rgba(green_robe);
+        ctx.beginPath(); ctx.arc(12, 72, 8, 0, Math.PI*2); ctx.fill();
+        ctx.beginPath(); ctx.arc(68, 72, 8, 0, Math.PI*2); ctx.fill();
+        
+        // الأيدي
+        ctx.fillStyle = rgba(skin);
+        ctx.beginPath(); ctx.ellipse(8, 82, 6, 6, 0, 0, Math.PI*2); ctx.fill();
+        ctx.beginPath(); ctx.ellipse(72, 82, 6, 6, 0, 0, Math.PI*2); ctx.fill();
+        
+        // الصولجان
+        rect(6, 85, 3, 9, gold_dark);
+        ctx.fillStyle = rgba(gold);
+        ctx.beginPath(); ctx.ellipse(8, 91, 4, 2, 0, 0, Math.PI*2); ctx.fill();
+        
+        // الدرع
+        ctx.fillStyle = rgba(gold);
+        ctx.beginPath(); ctx.arc(72, 83, 5, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = rgba(red);
+        ctx.fillRect(70, 80, 4, 5);
+        
+        // الفرو
+        for(let x = 10; x < 70; x += 6) {
+            ctx.fillStyle = rgba(white);
+            ctx.beginPath(); ctx.ellipse(x, 93, 2, 1, 0, 0, Math.PI*2); ctx.fill();
+        }
+        
+        // الدرع والباري
+        ctx.restore();
+        ctx.save();
+        ctx.translate(this.x + (this.facing === -1 ? this.w : 0), this.y);
+        if (this.facing === -1) ctx.scale(-1, 1);
+        
+        if(this.isParrying) {
+            ctx.strokeStyle = "yellow"; ctx.lineWidth = 15;
+            ctx.beginPath(); ctx.arc(60, 90, 150, -0.6, 0.6); ctx.stroke();
+        }
+
+        if(this.isShielded) {
+            ctx.strokeStyle = "#00fbff"; ctx.lineWidth = 12;
+            ctx.shadowBlur = 30; ctx.shadowColor = "#00fbff";
+            ctx.beginPath(); ctx.arc(60, 90, 170, 0, Math.PI*2); ctx.stroke();
+        }
+
+        if(this.comboCount > 0) {
+            ctx.restore(); ctx.save();
+            ctx.fillStyle = "#ffd700"; ctx.font = "bold 60px Tahoma";
+            ctx.shadowBlur = 30; ctx.shadowColor = "orange";
+            ctx.fillText(this.comboCount + " ضربات", this.x - 20, this.y - 80);
+        }
+        
+        ctx.restore();
+    }
+
+    draw() {
+        if(this.charType === 2) {
+            this.drawKing();
+            return;
+        }
+        
+        ctx.save(); 
+        ctx.translate(this.x + (this.facing === -1 ? this.w : 0), this.y);
+        if (this.facing === -1) ctx.scale(-1, 1);
+        
+        if(this.isAwakened) {
+            ctx.shadowBlur = 50; ctx.shadowColor = this.color;
+            ctx.strokeStyle = "white"; ctx.lineWidth = 6;
+            ctx.strokeRect(0, -20, this.w, this.h + 30);
+        }
+
+        ctx.fillStyle = this.suit; ctx.fillRect(20, 60, 80, 120);
+        ctx.fillStyle = this.isAwakened ? "#fff" : this.color; ctx.fillRect(20, 70, 80, 40);
+        ctx.fillStyle = "#ffdbac"; ctx.fillRect(35, 5, 50, 60); 
+        
+        ctx.fillStyle = this.isAwakened ? "red" : "#000";
+        ctx.fillRect(70, 25, 15, 8); 
+
+        if(this.isParrying) {
+            ctx.strokeStyle = "yellow"; ctx.lineWidth = 15;
+            ctx.beginPath(); ctx.arc(60, 90, 150, -0.6, 0.6); ctx.stroke();
+        }
+
+        if(this.isShielded) {
+            ctx.strokeStyle = "#00fbff"; ctx.lineWidth = 12;
+            ctx.shadowBlur = 30; ctx.shadowColor = "#00fbff";
+            ctx.beginPath(); ctx.arc(60, 90, 170, 0, Math.PI*2); ctx.stroke();
+        }
+
+        if(this.comboCount > 0) {
+            ctx.restore(); ctx.save();
+            ctx.fillStyle = "#ffd700"; ctx.font = "bold 60px Tahoma";
+            ctx.shadowBlur = 30; ctx.shadowColor = "orange";
+            ctx.fillText(this.comboCount + " ضربات", this.x - 20, this.y - 80);
+        }
+
+        ctx.restore();
+    }
+
+    update() {
+        if(gameFrozen > 0) return;
+
+        if(this.health < 200 && !this.isAwakened) {
+            this.isAwakened = true;
+            camera.shake = 80;
+            gameFrozen = 15;
+            for(let i=0; i<100; i++) particles.push(new Particle(this.x+60, this.y+90, this.color, 15, (Math.random()-0.5)*50, (Math.random()-0.5)*50));
+        }
+
+        let speedMult = (this.speedTimer > 0 ? 3.0 : 1) * (this.isAwakened ? 1.6 : 1);
+        this.vy += world.gravity; 
+        this.x += this.vx * speedMult; 
+        this.y += this.vy; 
+        this.vx *= 0.88;
+
+        if (this.y + this.h > world.groundY) { 
+            this.y = world.groundY - this.h; this.vy = 0; this.onGround = true;
+        } else { this.onGround = false; }
+
+        platforms.forEach(p => {
+            if(this.vy > 0 && this.y + this.h >= p.y && this.y + this.h <= p.y + p.h && this.x + this.w > p.x && this.x < p.x + p.w) {
+                this.y = p.y - this.h; this.vy = 0; this.onGround = true;
+            }
+        });
+        
+        this.updateTimers();
+
+        if (this.id === 1) this.updateUI();
+        if (this.isAI) this.updateAI();
+    }
+
+    updateTimers() {
+        if (this.dshCD > 0) this.dshCD -= 1/60;
+        if (this.orbCD > 0) this.orbCD -= 1/60;
+        if (this.ultCD > 0) this.ultCD -= 1/60;
+        if (this.shieldTimer > 0) this.shieldTimer--; else this.isShielded = false;
+        if (this.speedTimer > 0) this.speedTimer--;
+        if (this.parryTimer > 0) this.parryTimer--; else this.isParrying = false;
+        if (this.comboTimer > 0) this.comboTimer--; else { this.comboCount = 0; this.isRepelling = false; }
+    }
+
+    updateUI() {
+        const updateCD = (btnId, cd) => {
+            const mask = document.getElementById(btnId + '-cd');
+            const txt = document.getElementById(btnId + '-txt');
+            if(cd > 0) {
+                mask.style.height = (cd / 8 * 100) + "%";
+                txt.innerText = Math.ceil(cd);
+            } else { mask.style.height = "0%"; txt.innerText = ""; }
+        };
+        updateCD('dsh', this.dshCD);
+        updateCD('orb', this.orbCD);
+        updateCD('ult', this.ultCD);
+    }
+
+    takeDamage(dmg, dir, force) {
+        if(this.isShielded || this.isParrying) {
+            createImpact(this.x, this.y, "white");
+            return;
+        }
+        this.health -= dmg; 
+        this.vx = dir * force;
+        camera.shake = 35;
+        gameFrozen = 4;
+        for(let i=0; i<40; i++) particles.push(new Particle(this.x + 60, this.y + 90, "#ff0000", 10, (Math.random()-0.5)*30, (Math.random()-0.5)*30));
+        document.getElementById('h' + this.id).style.width = Math.max(0, (this.health / this.maxHealth) * 100) + "%";
+        if (this.health <= 0 && gameRunning) endGame(this.id === 2);
+    }
+
+    attack(target) { 
+        let range = this.isAwakened ? 400 : 300;
+        if (Math.abs((this.x + this.w/2) - (target.x + target.w/2)) < range) {
+            if(target.isParrying) {
+                this.vx = -this.facing * 60;
+                this.takeDamage(15, -this.facing, 25);
+                return;
+            }
+            this.handleCombo(target);
+        } else {
+            this.parry();
+        }
+    }
+
+    handleCombo(target) {
+        this.comboCount++;
+        this.comboTimer = 100;
+        let dmg = this.isAwakened ? 50 : 30;
+
+        if(this.comboCount >= 6) {
+            target.takeDamage(dmg * 3, this.facing, 150);
+            camera.shake = 80; gameFrozen = 10;
+            createImpact(target.x, target.y, this.color);
+            this.vx = -this.facing * 100; 
+            this.isRepelling = true;
+            this.comboCount = 0;
+        } else {
+            target.takeDamage(dmg, this.facing, 40); 
+        }
+        if(this.lifeStealActive) this.health = Math.min(this.maxHealth, this.health + 25);
+    }
+
+    parry() {
+        if(this.parryTimer <= 0) {
+            this.isParrying = true;
+            this.parryTimer = 40;
+        }
+    }
+
+    shoot() { 
+        if(this.ultCD <= 0) {
+            bullets.push(new Projectile(this.x + (this.facing*120), this.y + 70, this.facing, this));
+            this.ultCD = this.isAwakened ? 3 : 8; 
+        }
+    }
+
+    useSpecial() { 
+        if (this.orbCD <= 0) { 
+            if (selectedAbility === 'bomb') orbs.push(new TimedOrb(this.x + 60, this.y + 30, this.facing * 40, -40, this));
+            else if (selectedAbility === 'shield') { this.isShielded = true; this.shieldTimer = 500; }
+            else if (selectedAbility === 'speed') { this.speedTimer = 800; }
+            else if (selectedAbility === 'life') { this.lifeStealActive = true; setTimeout(()=>this.lifeStealActive=false, 10000); }
+            this.orbCD = 12; 
+        } 
+    }
+
+    updateAI() {
+        if(this.isRepelling || gameFrozen > 0) return;
+        let dist = p1.x - this.x;
+        let dy = p1.y - this.y;
+
+        if (Math.abs(dist) < 400) { 
+            if (Math.random() < 0.15) this.attack(p1); 
+            if (Math.random() < 0.08) this.parry();
+        } else { 
+            this.vx += (dist > 0 ? 1.8 : -1.8) * (this.isAwakened ? 2.0 : 1); 
+            this.facing = dist > 0 ? 1 : -1; 
+            if((Math.random() < 0.03 || dy < -150) && this.onGround) this.vy = -50;
+        }
+        if(Math.random() < 0.01) this.shoot();
+    }
+}
+
+/**
+ * SECTION 5: UTILITIES & VISUAL EFFECTS
+ */
+
+function createImpact(x, y, color) {
+    for(let i=0; i<60; i++) {
+        particles.push(new Particle(x+60, y+90, color, 18, (Math.random()-0.5)*70, (Math.random()-0.5)*70));
+    }
+}
+
+// نظام الجويستيك
+let joyTouchId = null; let joy = { active: false, x: 0, y: 0 };
+const jBase = document.getElementById('joy-base'); const jStick = document.getElementById('joy-stick');
+
+jBase.addEventListener('touchstart', (e) => { 
+    e.preventDefault(); joyTouchId = e.changedTouches[0].identifier; joy.active = true; 
+}, { passive: false });
+
+window.addEventListener('touchmove', (e) => {
+    if (!joy.active) return;
+    for (let t of e.touches) {
+        if (t.identifier === joyTouchId) {
+            let rect = jBase.getBoundingClientRect();
+            let dx = t.clientX - (rect.left + 70); 
+            let dy = t.clientY - (rect.top + 70);
+            let dist = Math.min(Math.sqrt(dx*dx + dy*dy), 60); 
+            let angle = Math.atan2(dy, dx);
+            joy.x = Math.cos(angle) * (dist / 60); 
+            joy.y = Math.sin(angle) * (dist / 60);
+            jStick.style.transform = `translate(${Math.cos(angle)*dist}px, ${Math.sin(angle)*dist}px)`;
+        }
+    }
+}, { passive: false });
+
+window.addEventListener('touchend', (e) => { 
+    for (let t of e.changedTouches) { 
+        if (t.identifier === joyTouchId) { 
+            joy.active = false; joy.x = 0; joy.y = 0; 
+            jStick.style.transform = 'translate(0,0)'; 
+        } 
+    } 
+});
+
+document.getElementById('btnAtk').addEventListener('touchstart', (e) => { e.preventDefault(); p1.attack(p2); });
+document.getElementById('btnDsh').addEventListener('touchstart', (e) => { 
+    e.preventDefault(); 
+    if(p1.dshCD<=0){p1.vx = p1.facing*150; p1.dshCD=8;} 
+});
+document.getElementById('btnUlt').addEventListener('touchstart', (e) => { e.preventDefault(); p1.shoot(); });
+document.getElementById('btnOrb').addEventListener('touchstart', (e) => { e.preventDefault(); p1.useSpecial(); });
+
+let p1, p2;
+
+function startGame() {
+    document.getElementById('mainMenu').style.opacity = '0';
+    setTimeout(() => {
+        document.getElementById('mainMenu').style.display = 'none';
+        document.getElementById('joy-base').style.display = 'block';
+        document.getElementById('gameControls').style.display = 'grid';
+        
+        p1 = new Player(800, 1, p1Color, p1Suit, false, selectedCharacter);
+        p2 = new Player(10000, 2, "#ff416c", "#111", true, 0);
+        
+        gameRunning = true;
+        resize();
+        requestAnimationFrame(loop);
+    }, 800);
+}
+
+function resize() { 
+    canvas.width = window.innerWidth; 
+    canvas.height = window.innerHeight; 
+}
+window.addEventListener('resize', resize);
+
+function endGame(isWin) {
+    gameRunning = false;
+    if(isWin) { 
+        wins++; localStorage.setItem('animeWins', wins); 
+        document.getElementById('endStatus').innerText = "انتصار ساحق"; 
+    } else { 
+        losses++; localStorage.setItem('animeLosses', losses); 
+        document.getElementById('endStatus').innerText = "هزيمــة"; 
+    }
+    document.getElementById('endScreen').style.display = 'flex';
+}
+
+function openMenu(id) { document.getElementById(id).style.display = 'block'; }
+function closeMenus() { document.querySelectorAll('.sub-menu').forEach(m => m.style.display = 'none'); }
+
+/**
+ * SECTION 6: THE CINEMATIC GAME LOOP
+ */
+
+function loop(timestamp) {
+    if (!gameRunning) return;
+
+    if(gameFrozen > 0) {
+        gameFrozen--;
+        requestAnimationFrame(loop);
+        return;
+    }
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    camera.x += (p1.x - canvas.width/SCALE/2 - camera.x) * 0.05;
+    camera.y += (p1.y - canvas.height/SCALE/1.5 - camera.y) * 0.03;
+    
+    let sX = (Math.random() - 0.5) * camera.shake; 
+    let sY = (Math.random() - 0.5) * camera.shake;
+    camera.shake *= 0.9;
+    
+    ctx.save(); 
+    ctx.scale(SCALE, SCALE); 
+    ctx.translate(-camera.x + sX, -camera.y + sY);
+    
+    drawBackground();
+    drawWeather();
+    drawEnvironment();
+
+    if (joy.active) {
+        if (Math.abs(joy.x) > 0.1) { p1.vx += joy.x * 5; p1.facing = joy.x > 0 ? 1 : -1; }
+        if (joy.y < -0.5 && p1.onGround) p1.vy = -52;
+    }
+
+    updateEntities();
+    
+    ctx.restore(); 
+    requestAnimationFrame(loop);
+}
+
+function drawBackground() {
+    let bgGrad = ctx.createLinearGradient(0, 0, 0, world.height);
+    bgGrad.addColorStop(0, "#010103"); bgGrad.addColorStop(1, "#0a0515");
+    ctx.fillStyle = bgGrad; 
+    ctx.fillRect(camera.x - 1000, camera.y - 1000, canvas.width/SCALE + 2000, canvas.height/SCALE + 2000);
+    
+    ctx.shadowBlur = 150; ctx.shadowColor = "rgba(255,255,255,0.5)";
+    ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(camera.x + 2500, 600, 300, 0, Math.PI*2); ctx.fill();
+    ctx.shadowBlur = 0;
+}
+
+function drawWeather() {
+    ctx.strokeStyle = "rgba(255,255,255,0.1)"; ctx.lineWidth = 3;
+    weatherParticles.forEach(p => {
+        ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.x - 10, p.y + p.len); ctx.stroke();
+        p.y += p.v; if(p.y > world.height) p.y = -100;
+    });
+}
+
+function drawEnvironment() {
+    ctx.fillStyle = "#030303"; 
+    ctx.fillRect(camera.x - 1000, world.groundY, canvas.width/SCALE + 2000, 1000);
+    
+    rocks.forEach(r => { 
+        ctx.fillStyle = r.color; 
+        ctx.fillRect(r.x, world.groundY - r.h, r.w, r.h); 
+    });
+    
+    ctx.fillStyle = "#1a1a1a"; ctx.strokeStyle = "#333"; ctx.lineWidth = 8;
+    platforms.forEach(p => { 
+        ctx.fillRect(p.x, p.y, p.w, p.h); 
+        ctx.strokeRect(p.x, p.y, p.w, p.h); 
+    });
+}
+
+function updateEntities() {
+    for (let i = particles.length - 1; i >= 0; i--) {
+        particles[i].update(); 
+        particles[i].draw();
+        if (particles[i].life <= 0) particles.splice(i, 1);
+    }
+
+    for (let i = orbs.length - 1; i >= 0; i--) {
+        orbs[i].update(); 
+        orbs[i].draw(); 
+        if (orbs[i].exploded) orbs.splice(i, 1);
+    }
+
+    for (let i = bullets.length - 1; i >= 0; i--) {
+        bullets[i].update(); 
+        bullets[i].draw(); 
+        if (!bullets[i].active) bullets.splice(i, 1);
+    }
+    
+    p1.update(); p1.draw(); 
+    p2.update(); p2.draw();
+}
+
+window.addEventListener('keydown', (e) => {
+    if(!p1) return;
+    if(e.key === 'd' || e.key === 'ArrowRight') p1.vx = 30;
+    if(e.key === 'a' || e.key === 'ArrowLeft') p1.vx = -30;
+    if((e.key === 'w' || e.key === 'ArrowUp') && p1.onGround) p1.vy = -50;
+    if(e.key === 'j' || e.key === 'z') p1.attack(p2);
+    if(e.key === 'k' || e.key === 'x') p1.parry();
+    if(e.key === 'l' || e.key === 'c') p1.shoot();
+});
+
+</script>
+</body>
+</html>
